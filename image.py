@@ -14,10 +14,13 @@ class Image():
         self.current_image = self.parse_next_image()
         self.nr_of_images = self.readNrOfImages()
 
-    def getFacit(self,index):
+    def get_facit(self,index):
         return self.facit[index]
 
-    def printFacit(self,index):
+    def get_current_image(self):
+        return self.current_image
+
+    def print_facit(self,index):
         value = self.facit[index]
         if value==1:
             return "happy"
@@ -36,7 +39,6 @@ class Image():
             if is_int(i):
                 return int(i)
         return -1
-
 
     def reset_current_line(self):
         self.current_line = 0
@@ -101,7 +103,7 @@ if __name__ == "__main__":
     img = Image('./material/training-A.txt','./material/facit-A.txt')
 
     print(img.image_number)
-    print(img.printFacit(img.current_facit_index()))
+    print(img.print_facit(img.current_facit_index()))
 
 
 

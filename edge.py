@@ -16,8 +16,7 @@ class Edge:
         self.weight = self.start_weight
 
     def calculate_weight(self, input, facit):
-
-        if out.get_goal_value()==facit: facit = 1
+        if self.out.get_goal_value() == facit: facit = 1
         else: facit = 0
 
         weight = (self.out.get_value() - facit) * self.out.get_value() * (1 - self.out.get_value()) * input
