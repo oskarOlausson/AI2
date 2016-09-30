@@ -12,11 +12,10 @@ class Faces:
 
 
     def main(self, image_path, facit_path):
-        image = Image(image_path, facit_path)
+        self.image_handler = Image(image_path, facit_path)
 
 
 
-#training
 if __name__=="__main__":
     learning_rate = 0.1
     start_weight = 0.5
@@ -26,16 +25,16 @@ if __name__=="__main__":
     facit_path = sys.argv[2]
     face = Faces(image_path, facit_path)
 
-    image = face.get_current_image()
+    image = Image(image_path, facit_path)
 
     #fore each image
-    image_count = image.get_nr_of_images();
+    image_count = len(image.get_images());
     for i in range(0, image_count):
         ins = list()
 
         #loop an image and conect them to edges
-        for i in range(0,201):
-            for j in range(201):
+        for i in range(0,20):
+            for j in range(20):
 
                 edges = list()
                 outs = list()
@@ -43,38 +42,34 @@ if __name__=="__main__":
                     out = OutNode(k)
                     outs.append(out)
                     edge = Edge(out, constants)
-                    edges.apend(edge)
+                    edges.append(edge)
 
-                ins.apend( InNode(image.check_pixel(i, j), outs, constants))
+                ins.append(InNode(image.check_pixel(i, j), outs, constants))
 
+    def train(self):
 
-                    # träna
+        # for every image
+        image_handler = self.image_handler
+        images = image_handler.image.get_images()
+        for i in range(0, len(images)):
+            image = self.image_handler.get_image(i)
 
+            #reset all out values
+            for out in outs:
+                out.reset_value()
 
-    def train():
-        inp = [0] * 2
-        net = [0] * 2
-        out = [0] * 2
-        facit = [0] * 2
+            #update pixel
+            for in_ in ins:
+                for x in range(0,20):
+                    for y in range(0,20):
+                        in_.update_pixel(image.check_pixel(x,y))
 
+                #update out
+                in_.edges_to_out()
 
+            #out preces
+            for out in outs:
+                out.process_out_value()
 
-        learningRate = constants.get_learning_rate()
-
-        for ins in test_list:
-            number = 0
-
-            inp[0] = test_list[number + 0]
-            inp[1] = tetest_listst[number + 1]
-
-            net[0] = inp[0] * w1 + inp[1] * w2
-            net[1] = inp[0] * w3 + inp[1] * w4
-
-            out[0] = 1 / (1 + exp(-net[0]))
-            out[1] = 1 / (1 + exp(-net[1]))
-
-            facit[0] = test_list[number + 2]
-            facit[1] = test_list[number + 3]
-
-            #alla noder calculate_weights
-            ins.___
+            for in_ in ins:
+                in_.calculate_weights(image_handler.get_facit())
