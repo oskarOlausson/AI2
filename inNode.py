@@ -19,6 +19,8 @@ class InNode:
 
     def calculate_weights(self, facit):
         for edge in self.edges:
-            edge.calculate_weight(self, facit)
+            edge.calculate_weight(self.pixel, facit)
 
-
+    def edges_to_out(self):
+        for edge in self.edges:
+            edge.send_to_out(self.pixel)
