@@ -13,7 +13,7 @@ class Image():
         self.current_line = 0
         self.images = self.create_image_list()
         self.current_image = self.images[0]
-        self.nr_of_images = self.readNrOfImages()
+        self.nr_of_images = self.read_nr_of_images()
 
     def get_images(self):
         return self.images
@@ -22,7 +22,7 @@ class Image():
         self.current_line = 0
         images = list()
 
-        img = self.current_image
+        img = self.parse_next_image()
         images.append(img)
 
         while(img!=None):
@@ -32,8 +32,11 @@ class Image():
 
         return images
 
-    def get_facit(self,index):
+    def get_facit(self, index):
         return self.facit[index]
+
+    def get_image(self, index):
+        return self.images[index]
 
     def get_current_image(self):
         return self.current_image
@@ -51,7 +54,7 @@ class Image():
         else:
             return "Unknown feeling"
 
-    def readNrOfImages(self):
+    def read_nr_of_images(self):
         information = self.img[1]
         for i in information.replace("(","( ").replace(" )"," ").split():
             if is_int(i):

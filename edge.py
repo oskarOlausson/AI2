@@ -5,7 +5,7 @@ from constants import Constants
 class Edge:
     def __init__(self, out, constants):
         self.learning_rate = constants.get_learning_rate()
-        self.start_weight = constants.get_start_weight
+        self.start_weight = constants.get_start_weight()
         self.weight = self.start_weight
         self.out = out
 
