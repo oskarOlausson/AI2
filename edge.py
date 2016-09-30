@@ -25,3 +25,4 @@ class Edge:
     def send_to_out(self, input):
         self.out.accumulate(self.weight * input)
 
+    # TODO create funktion for randomize weight
