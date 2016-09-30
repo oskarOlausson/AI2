@@ -2,7 +2,7 @@
 
 class Constants():
 
-    def __init__(self, learning_rate: object, start_weight: object) -> object:
+    def __init__(self, learning_rate, start_weight):
         self.learning_rate = learning_rate
         self.start_weight = start_weight
 

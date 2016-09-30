@@ -25,7 +25,7 @@ class Image():
         img = self.parse_next_image()
         images.append(img)
 
-        while(img!=None):
+        while img != None:
             img = self.parse_next_image()
             if img != None:
                 images.append(img)
@@ -77,14 +77,13 @@ class Image():
 
             self.next_line()
             if stop: return self.current_line
-
-            if self.current_line>self.image_size()-1: return -1
+            if self.current_line > len(self.img)-1: return -1
 
     def image_size(self):
         return 20
 
     def parse_next_image(self):
-        if self.find_next_image()!=-1: return self.parse_image()
+        if self.find_next_image() != -1: return self.parse_image()
         else: return None
 
     def parse_image_line(self):

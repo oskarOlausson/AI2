@@ -13,10 +13,11 @@ class OutNode:
         return self.out_value
 
     def reset_value(self):
-        self.out_value = 1
+        self.out_value = 0
 
     def accumulate(self, edge_value):
-        self.out_value *= edge_value
+        self.out_value += edge_value
+        print("out: {} has value: {}".format(self.goal_value, self.out_value))
 
     def process_out_value(self):
         self.out_value = 1 / (1 + exp(-self.out_value))
