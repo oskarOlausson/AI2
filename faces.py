@@ -45,7 +45,7 @@ if __name__=="__main__":
                     edge = Edge(out, constants)
                     edges.apend(edge)
 
-                ins.apend( InNode(image.check_pixel(i, j), outs, constants))
+                ins.apend(InNode(image.check_pixel(i, j), outs, constants))
 
 
                     # träna
