@@ -13,6 +13,12 @@ class InNode:
     def update_pixel(self, pixel):
         self.pixel = pixel
 
+    def get_edges(self):
+        return self.edges
+
+    def get_pixel(self):
+        return self.pixel
+
     def reset_weights(self):
         for edge in self.edges:
             edge.reset_weight()

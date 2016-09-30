@@ -1,11 +1,12 @@
 
 from outNode import OutNode
 from constants import Constants
+import random
 
 class Edge:
     def __init__(self, out, constants):
         self.learning_rate = constants.get_learning_rate()
-        self.start_weight = constants.get_start_weight()
+        self.start_weight = random.randrange(0,1)
         self.weight = self.start_weight
         self.out = out
 
@@ -19,10 +20,13 @@ class Edge:
         if self.out.get_goal_value() == facit: facit = 1
         else: facit = 0
 
+        a = self.out.get_value()
+
         weight = (self.out.get_value() - facit) * self.out.get_value() * (1 - self.out.get_value()) * input
+
+        #print("({} - {}) * {} * (1 - {}) * {} = {}".format(a, facit, a, a, input, weight))
         self.weight -= (weight * self.learning_rate)
 
     def send_to_out(self, input):
         self.out.accumulate(self.weight * input)
 
-    # TODO create funktion for randomize weight

@@ -17,7 +17,15 @@ class OutNode:
 
     def accumulate(self, edge_value):
         self.out_value += edge_value
-        print("out: {} has value: {}".format(self.goal_value, self.out_value))
+
+    def get_error(self,facit):
+        if self.goal_value == facit:
+            facit = 1
+        else:
+            facit = 0
+
+        return abs(self.get_value() - facit)
+
 
     def process_out_value(self):
         self.out_value = 1 / (1 + exp(-self.out_value))
