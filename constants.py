@@ -10,5 +10,7 @@ class Constants():
     def get_learning_rate(self):
         return self.learning_rate
 
-    def get_starti_weight(self):
+    def get_start_weight(self):
         return self.start_weight
+
+

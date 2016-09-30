@@ -30,7 +30,7 @@ class Image():
         else:
             return "Unknown feeling"
 
-    def readNrOfImages(self):
+    def get_nr_of_images(self):
         information = self.img[1]
         for i in information.replace("(","( ").replace(" )"," ").split():
             if is_int(i):
