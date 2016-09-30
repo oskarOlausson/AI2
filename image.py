@@ -11,8 +11,26 @@ class Image():
         f.close()
 
         self.current_line = 0
-        self.current_image = self.parse_next_image()
+        self.images = self.create_image_list()
+        self.current_image = self.images[0]
         self.nr_of_images = self.readNrOfImages()
+
+    def get_images(self):
+        return self.images
+
+    def create_image_list(self):
+        self.current_line = 0
+        images = list()
+
+        img = self.current_image
+        images.append(img)
+
+        while(img!=None):
+            img = self.parse_next_image()
+            if img != None:
+                images.append(img)
+
+        return images
 
     def get_facit(self,index):
         return self.facit[index]
@@ -57,9 +75,14 @@ class Image():
             self.next_line()
             if stop: return self.current_line
 
+            if self.current_line>self.image_size()-1: return -1
+
+    def image_size(self):
+        return 20
+
     def parse_next_image(self):
-        self.find_next_image()
-        return self.parse_image()
+        if self.find_next_image()!=-1: return self.parse_image()
+        else: return None
 
     def parse_image_line(self):
         line = self.img[self.current_line].split()
@@ -102,8 +125,10 @@ if __name__ == "__main__":
 
     img = Image('./material/training-A.txt','./material/facit-A.txt')
 
-    print(img.image_number)
-    print(img.print_facit(img.current_facit_index()))
+    for i in range(0,1000):
+        if img.parse_next_image()==None:
+            print("stopped")
+            break
 
 
 
