@@ -6,7 +6,7 @@ import random
 class Edge:
     def __init__(self, out, constants):
         self.learning_rate = constants.get_learning_rate()
-        self.start_weight = random.randrange(0,1)
+        self.start_weight = 0 #(random.random() - 0.5) / 10000
         self.weight = self.start_weight
         self.out = out
 
@@ -17,14 +17,15 @@ class Edge:
         self.weight = self.start_weight
 
     def calculate_weight(self, input, facit):
-        if self.out.get_goal_value() == facit: facit = 1
-        else: facit = 0
+        facit = self.out.get_correct(facit)
 
-        a = self.out.get_value()
+        error = facit - self.out.get_value()
+
+        #fredriks
+        #self.weight += self.learning_rate * error * input
 
         weight = (self.out.get_value() - facit) * self.out.get_value() * (1 - self.out.get_value()) * input
 
-        #print("({} - {}) * {} * (1 - {}) * {} = {}".format(a, facit, a, a, input, weight))
         self.weight -= (weight * self.learning_rate)
 
     def send_to_out(self, input):

@@ -30,3 +30,7 @@ class InNode:
     def edges_to_out(self):
         for edge in self.edges:
             edge.send_to_out(self.pixel)
+
+    def print_weights(self):
+        for edge in self.edges:
+            print("edge weight: " + str(edge.get_weight()))
