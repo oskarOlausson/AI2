@@ -4,30 +4,37 @@ from math import atan2, pi
 
 class Image():
 
-    def __init__(self, path, pathFacit):
+    def __init__(self, path, path_facit):
+        self.IMAGE_SIZE = 20
 
         f = open(path)
         self.img = f.readlines()
         f.close()
 
-        f = open(pathFacit)
-        self.facit = self.parse_facit(f.readlines())
-        f.close()
+        if path_facit is not None:
+            f = open(path_facit)
+            self.facit = self.parse_facit(f.readlines())
+            f.close()
+        else:
+            path_facit = None
 
         self.image_number = 0
         self.current_line = 0
 
         self.image_names = []
         #Parameter is wheather the images should be rotated
-        self.images = self.create_image_list(True)
+        self.images = self.create_image_list()
 
         self.current_image = self.images[0]
-        self.nr_of_images = self.read_nr_of_images()
 
     def get_images(self):
         return self.images
 
-    def create_image_list(self, rotate):
+    def create_image_list(self):
+        """
+        creates list of images
+        :return: list of numpy array
+        """
         self.current_line = 0
         images = list()
 
@@ -37,13 +44,16 @@ class Image():
         while img is not None:
             img = self.parse_next_image()
             if img is not None:
-                if rotate: img = self.rotate_image(img)
+                img = self.rotate_image(img)
                 images.append(img)
 
         return images
 
     def get_facit(self, index):
-        return self.facit[index]
+        if self.facit is not None:
+            return self.facit[index]
+        else:
+            return None
 
     def get_name(self, index):
         return self.image_names[index]
@@ -54,17 +64,12 @@ class Image():
     def get_current_image(self):
         return self.current_image
 
-    def read_nr_of_images(self):
-        information = self.img[1]
-        for i in information.replace("(", "( ").replace(" )", " ").split():
-            if is_int(i):
-                return int(i)
-        return -1
-
-    def reset_current_line(self):
-        self.current_line = 0
-
     def find_next_image(self):
+        """
+        reads until next image is found
+        (also reads in image names)
+        :return: line index
+        """
         stop = False
         while (not stop):
             line = self.img[self.current_line]
@@ -83,12 +88,14 @@ class Image():
         return self.current_line
 
     def rotate_image(self, img):
-
+        """
+        rotates the image so the eyes are at the top
+        """
         cx, cy = 9, 9
         index = 0
 
         index += 1
-        mx, my = find_eyes(img)
+        mx, my = self.find_eyes(img)
         angle = atan2(mx - cx, my - cy)
 
         angle *= 180 / pi
@@ -103,21 +110,11 @@ class Image():
 
         return array
 
-    def save_all(self):
-
-        for index in range(0,len(self.images)):
-
-            img = self.images[index]
-            img = img.T
-            for y in range(0,20):
-                for x in range(0,20):
-                    img[x][y] = 255 - (img[x][y] * float(255) / 32)
-
-            graphic = Im.fromarray(img)
-            graphic = graphic.convert('RGB')
-            graphic.save('./pictures/face_img_' + self.image_names[index] + '.jpg')
-
     def parse_next_image(self):
+        """
+        reads until next image an returns it
+        :return: numpy array
+        """
         if self.find_next_image() != -1:
             return self.parse_image_numpy()
         else:
@@ -133,8 +130,8 @@ class Image():
         return self.current_line
 
     def parse_image_numpy(self):
-        image = numpy.zeros((20, 20))
-        for y in range(0, 20):
+        image = numpy.zeros((self.IMAGE_SIZE, self.IMAGE_SIZE))
+        for y in range(0, self.IMAGE_SIZE):
             str = self.parse_image_line()
             for x in range(0,len(str)):
                 image[x][y] = str[x]
@@ -142,6 +139,10 @@ class Image():
         return image
 
     def parse_facit(self, stringList):
+        """
+        checks what the facit is
+        :return:
+        """
         facitList = list()
         for row in stringList:
             if row.find("Image") == 0:
@@ -149,50 +150,40 @@ class Image():
 
         return facitList
 
+    def find_eyes(self, image):
+        """
+        finds the eyes by checking the average position of the 26 darkest pixels
+        :return: that average position
+        """
+        length = 26
+        dark_spots = [0] * length
+        dark_positions = [(0, 0)] * length
 
-def is_int(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
+        for y in range(0, self.IMAGE_SIZE):
+            for x in range(0, self.IMAGE_SIZE):
+                value = image[x][y]
+                index = len(dark_spots) - 1
+                while value >= dark_spots[index] and index > 0:
+                    index -= 1
 
-def find_eyes(image):
+                if index < len(dark_spots) - 1:
+                    dark_spots.insert(index, value)
+                    dark_positions.insert(index, (x, y))
+                    # remove the last so the list does not get longer
+                    dark_spots.pop(len(dark_spots) - 1)
+                    dark_positions.pop(len(dark_positions) - 1)
 
-    length = 26
-    dark_spots = [0] * length
-    dark_positions = [(0,0)] * length
+        mx, my = (0, 0)
+        for index in dark_positions:
+            ax, ay = index
+            mx += ax
+            my += ay
 
-    for y in range(0, 20):
-        for x in range(0, 20):
-            value = image[x][y]
-            index = len(dark_spots) - 1
-            while value >= dark_spots[index] and index > 0:
-                index -= 1
+        mx /= len(dark_positions)
+        my /= len(dark_positions)
 
-            if index < len(dark_spots) - 1:
-                dark_spots.insert(index,value)
-                dark_positions.insert(index,(x,y))
-                #remove the last so the list does not get longer
-                dark_spots.pop(len(dark_spots)-1)
-                dark_positions.pop(len(dark_positions)-1)
+        return mx, my
 
-
-    mx, my = (0, 0)
-    for index in dark_positions:
-        ax, ay = index
-        mx += ax
-        my += ay
-
-    mx /= len(dark_positions)
-    my /= len(dark_positions)
-
-    return mx, my
-
-if __name__ == "__main__":
-
-    img = Image('./material/training-A.txt', './material/facit-A.txt')
-    img.rotate_image(img.get_image(0))
 
 
 
